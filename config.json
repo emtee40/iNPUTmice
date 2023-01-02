@@ -1,0 +1,12 @@
+{
+  "component": {
+    "hostname": "localhost",
+    "port": 5347,
+    "jid": "up.conversations.im",
+    "sharedSecret": "none"
+  },
+  "registration": {
+    "sharedSecret": "7z8XLjkj/8h2T22nd1Z279vT2ONMOgQu8xj0BLps3qA=",
+    "uri": "https://up.conversations.im/push{?token}"
+  }
+}

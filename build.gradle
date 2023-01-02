@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+    id "com.diffplug.spotless" version "6.12.0"
+}
+
+group 'im.conversations.up'
+version '0.1-SNAPSHOT'
+
+sourceCompatibility = 11
+
+repositories {
+    mavenCentral()
+}
+
+spotless {
+    java {
+        googleJavaFormat('1.8').aosp().reflowLongStrings()
+    }
+}
+
+dependencies {
+    implementation 'com.google.guava:guava:31.1-jre'
+
+    //XMPP client library
+    implementation 'rocks.xmpp:xmpp-core-client:0.9.0'
+    implementation 'rocks.xmpp:xmpp-extensions-client:0.9.0'
+
+    //XMPP client library - XML serialization library
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
+    implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
+
+
+    // pasteto tokens
+    implementation "dev.paseto:jpaseto-api:0.7.0"
+    implementation "dev.paseto:jpaseto-impl:0.7.0"
+    implementation "dev.paseto:jpaseto-gson:0.7.0"
+    implementation "dev.paseto:jpaseto-bouncy-castle:0.7.0"
+
+    annotationProcessor "org.immutables:value:2.9.2"
+    implementation "org.immutables:value-annotations:2.9.2"
+    implementation "org.immutables:builder:2.9.2"
+    implementation "org.immutables:gson:2.9.2"
+
+    implementation "com.damnhandy:handy-uri-templates:2.1.8"
+
+    annotationProcessor 'info.picocli:picocli-codegen:4.7.0'
+    implementation 'info.picocli:picocli:4.7.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
