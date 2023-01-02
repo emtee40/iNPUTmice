@@ -1,12 +1,16 @@
 {
   "component": {
     "hostname": "localhost",
-    "port": 5347,
+    "port": 5348,
     "jid": "up.conversations.im",
     "sharedSecret": "none"
   },
   "registration": {
     "sharedSecret": "7z8XLjkj/8h2T22nd1Z279vT2ONMOgQu8xj0BLps3qA=",
     "uri": "https://up.conversations.im/push{?token}"
+  },
+  "webServer": {
+    "ip": "127.0.0.1",
+    "port": 6677
   }
 }

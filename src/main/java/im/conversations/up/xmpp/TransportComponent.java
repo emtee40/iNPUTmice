@@ -2,7 +2,9 @@ package im.conversations.up.xmpp;
 
 import im.conversations.up.Registration;
 import im.conversations.up.RegistrationProvider;
+import im.conversations.up.Target;
 import im.conversations.up.configuration.Configuration;
+import im.conversations.up.xmpp.extensions.up.Push;
 import im.conversations.up.xmpp.extensions.up.Register;
 import im.conversations.up.xmpp.extensions.up.Registered;
 import rocks.xmpp.core.XmppException;
@@ -15,11 +17,15 @@ import rocks.xmpp.core.stanza.model.errors.Condition;
 import rocks.xmpp.extensions.component.accept.ExternalComponent;
 import rocks.xmpp.extensions.muc.model.Muc;
 
-public final class ExternalComponents {
+public final class TransportComponent implements AutoCloseable {
 
-    private ExternalComponents() {}
+    private final ExternalComponent component;
 
-    public static ExternalComponent of(final Configuration.Component configuration) {
+    public TransportComponent(final Configuration.Component configuration) {
+        this.component = of(configuration);
+    }
+
+    private static ExternalComponent of(final Configuration.Component configuration) {
         final var sessionConfiguration =
                 XmppSessionConfiguration.builder()
                         .extensions(Extension.of(Register.class, Registered.class))
@@ -35,8 +41,7 @@ public final class ExternalComponents {
         return component;
     }
 
-    public static void setRegistrationProvider(
-            final ExternalComponent component, final RegistrationProvider registrationProvider) {
+    public void setRegistrationProvider(final RegistrationProvider registrationProvider) {
         final IQHandler registerHandler =
                 new AbstractIQHandler(Register.class, IQ.Type.SET) {
                     @Override
@@ -59,15 +64,22 @@ public final class ExternalComponents {
                                         registration.getEndpoint(), registration.getExpiration()));
                     }
                 };
-        component.addIQHandler(registerHandler);
+        this.component.addIQHandler(registerHandler);
     }
 
-    public static void connectAndRetry(final ExternalComponent component)
-            throws InterruptedException {
+    public void sendPushMessage(final Target target, final byte[] payload) {
+        final IQ push =
+                IQ.set(
+                        target.getOwner(),
+                        new Push(target.getApplication(), target.getInstance(), payload));
+        this.component.sendIQ(push);
+    }
+
+    public void connectAndRetry() throws InterruptedException {
         while (true) {
             try {
-                component.connect();
-                while (component.isConnected()) {
+                this.component.connect();
+                while (this.component.isConnected()) {
                     Thread.sleep(500);
                 }
             } catch (final XmppException e) {
@@ -75,5 +87,10 @@ public final class ExternalComponents {
             }
             Thread.sleep(2000);
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        this.component.close();
     }
 }

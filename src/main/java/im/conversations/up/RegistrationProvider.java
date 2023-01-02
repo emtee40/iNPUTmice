@@ -37,9 +37,7 @@ public class RegistrationProvider {
                         .claim("instance", instance)
                         .compact();
         final String endpoint =
-                UriTemplate.fromTemplate(this.uriTemplate)
-                        .set("token", token)
-                        .expand();
+                UriTemplate.fromTemplate(this.uriTemplate).set("token", token).expand();
         return ImmutableRegistration.builder().expiration(expiration).endpoint(endpoint).build();
     }
 

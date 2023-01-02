@@ -12,6 +12,8 @@ public interface Configuration {
 
     Registration getRegistration();
 
+    WebServer getWebServer();
+
     @Value.Immutable
     interface Component {
         String getHostname();
@@ -29,5 +31,12 @@ public interface Configuration {
         byte[] getSharedSecret();
 
         String getUri();
+    }
+
+    @Value.Immutable
+    interface WebServer {
+        String getIp();
+
+        int getPort();
     }
 }
