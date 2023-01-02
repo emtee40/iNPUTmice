@@ -7,6 +7,8 @@ import im.conversations.up.configuration.Configuration;
 import im.conversations.up.xmpp.extensions.up.Push;
 import im.conversations.up.xmpp.extensions.up.Register;
 import im.conversations.up.xmpp.extensions.up.Registered;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rocks.xmpp.core.XmppException;
 import rocks.xmpp.core.session.Extension;
 import rocks.xmpp.core.session.XmppSessionConfiguration;
@@ -19,6 +21,8 @@ import rocks.xmpp.extensions.muc.model.Muc;
 
 public final class TransportComponent implements AutoCloseable {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransportComponent.class);
+
     private final ExternalComponent component;
 
     public TransportComponent(final Configuration.Component configuration) {
@@ -28,7 +32,7 @@ public final class TransportComponent implements AutoCloseable {
     private static ExternalComponent of(final Configuration.Component configuration) {
         final var sessionConfiguration =
                 XmppSessionConfiguration.builder()
-                        .extensions(Extension.of(Register.class, Registered.class))
+                        .extensions(Extension.of(Register.class, Registered.class, Push.class))
                         .build();
         final var component =
                 ExternalComponent.create(
@@ -68,6 +72,12 @@ public final class TransportComponent implements AutoCloseable {
     }
 
     public void sendPushMessage(final Target target, final byte[] payload) {
+        LOGGER.info(
+                "pushing {} bytes to {}/{} of {}",
+                payload.length,
+                target.getApplication(),
+                target.getInstance(),
+                target.getOwner());
         final IQ push =
                 IQ.set(
                         target.getOwner(),
