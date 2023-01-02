@@ -7,9 +7,13 @@ import im.conversations.up.xmpp.TransportComponent;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
-public class UnifiedPushProxy implements Callable<Integer> {
+public class UnifiedPushProvider implements Callable<Integer> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UnifiedPushProvider.class);
 
     @CommandLine.Option(
             names = {"-c", "--config"},
@@ -22,8 +26,8 @@ public class UnifiedPushProxy implements Callable<Integer> {
         try {
             configuration = ConfigurationProvider.readFile(configurationFile);
         } catch (final NoSuchFileException e) {
-            System.err.printf(
-                    "Configuration file %s does not exist%n", configurationFile.toAbsolutePath());
+            LOGGER.error(
+                    "Configuration file {} does not exist", configurationFile.toAbsolutePath());
             return 2;
         }
         return execute(configuration);
