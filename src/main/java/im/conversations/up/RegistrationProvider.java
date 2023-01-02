@@ -9,9 +9,13 @@ import im.conversations.up.configuration.Configuration;
 import java.time.Duration;
 import java.time.Instant;
 import javax.crypto.SecretKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rocks.xmpp.addr.Jid;
 
 public class RegistrationProvider {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationProvider.class);
 
     private final SecretKey secretKey;
     private final String uriTemplate;
@@ -36,6 +40,7 @@ public class RegistrationProvider {
                         .claim("application", application)
                         .claim("instance", instance)
                         .compact();
+        LOGGER.info("{} has registered for push with {}/{}", owner, application, instance);
         final String endpoint =
                 UriTemplate.fromTemplate(this.uriTemplate).set("token", token).expand();
         return ImmutableRegistration.builder().expiration(expiration).endpoint(endpoint).build();

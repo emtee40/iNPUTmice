@@ -17,7 +17,7 @@ public class WebServer {
     public WebServer(final Configuration.WebServer configuration) {
         Spark.ipAddress(configuration.getIp());
         Spark.port(configuration.getPort());
-        Spark.post("/push", this::receivePushRequest);
+        Spark.post("/push/:token", this::receivePushRequest);
     }
 
     private String receivePushRequest(final Request request, final Response response) {
@@ -26,7 +26,7 @@ public class WebServer {
         if (callback == null || registrationProvider == null) {
             throw new IllegalStateException("Server not ready");
         }
-        final String token = request.queryParams("token");
+        final String token = request.params("token");
         final var length = request.contentLength();
         if (length > MAX_PAYLOAD_SIZE) {
             throw new PayloadTooLargeException();

@@ -60,7 +60,8 @@ public final class TransportComponent implements AutoCloseable {
                                             iq.getFrom(), application, instance);
                         } catch (final IllegalArgumentException e) {
                             return iq.createError(Condition.BAD_REQUEST);
-                        } catch (final IllegalStateException e) {
+                        } catch (final Exception e) {
+                            LOGGER.error("Could not register {} for push", iq.getFrom(), e);
                             return iq.createError(Condition.INTERNAL_SERVER_ERROR);
                         }
                         return iq.createResult(
