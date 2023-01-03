@@ -1,5 +1,6 @@
 package im.conversations.up.xmpp;
 
+import com.google.common.base.Throwables;
 import im.conversations.up.Registration;
 import im.conversations.up.RegistrationProvider;
 import im.conversations.up.Target;
@@ -15,6 +16,7 @@ import rocks.xmpp.core.session.XmppSessionConfiguration;
 import rocks.xmpp.core.stanza.AbstractIQHandler;
 import rocks.xmpp.core.stanza.IQHandler;
 import rocks.xmpp.core.stanza.model.IQ;
+import rocks.xmpp.core.stanza.model.StanzaErrorException;
 import rocks.xmpp.core.stanza.model.errors.Condition;
 import rocks.xmpp.extensions.component.accept.ExternalComponent;
 import rocks.xmpp.extensions.muc.model.Muc;
@@ -83,7 +85,28 @@ public final class TransportComponent implements AutoCloseable {
                 IQ.set(
                         target.getOwner(),
                         new Push(target.getApplication(), target.getInstance(), payload));
-        this.component.sendIQ(push);
+        this.component
+                .query(push)
+                .handle(
+                        (result, throwable) -> {
+                            if (throwable != null) {
+                                onPushMessageFailure(target, Throwables.getRootCause(throwable));
+                            }
+                            return null;
+                        });
+    }
+
+    private void onPushMessageFailure(final Target target, final Throwable throwable) {
+        if (throwable instanceof StanzaErrorException) {
+            final StanzaErrorException stanzaErrorException = (StanzaErrorException) throwable;
+            if (Condition.ITEM_NOT_FOUND.equals(stanzaErrorException.getCondition())) {
+                LOGGER.warn("instance {} of {} is gone", target.getInstance(), target.getOwner());
+                // TODO add instance to revocation list until it expires
+                return;
+            }
+        }
+        LOGGER.info(
+                "ignoring temporary error for {} of {}", target.getInstance(), target.getOwner());
     }
 
     public void connectAndRetry() throws InterruptedException {
