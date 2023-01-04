@@ -34,6 +34,7 @@ The Push Provider responds with the endpoint if the registration was successful.
 
 The endpoint (URL) is only valid until it's expiration. After that the client has to (automatically) renew it’s registration.
 
+The Push Provider is stateless if the full XMPP address of the user (client that registered the endpoint), the application, the instance and the expiration are endcoded in the endpoint URL (via JWT or simliar).
 
 When a push occurs, this is when an Application Server (Push Gateway) POSTs a payload to the endpoint, the Push Provider relays the payload by sending push element wrapped by an IQ-set to the client.
 
