@@ -23,6 +23,12 @@ The client registers with the Push Provider.
 </iq>
 ```
 
+*application* and *instance* is terminology borrowed from the UnifiedPush specification. (Application being self explanatory and *instance* (or sometimes *token*) being used because one app might need multiple endpoints for mulitple accounts.)
+
+As far as the Push Provider is concerned both could be opague strings but Conversations uses salted, base64 encoded SHA256 hashes of the application id and the instance (token). It is RECOMMENDED that the Push Provider enforces this convention.
+
+This will also restrict application and instances to known length.
+
 The Push Provider responds with the endpoint if the registration was successful.
 
 ```xml
