@@ -10,9 +10,14 @@ cd up
 java -jar build/libs/up-0.1-all.jar -c config.json
 ```
 
-### Protocol
+### Configuration
+`config.json` should be fairly self explanatory. The component section matches the component configuration of your XMPP server. `hostname` will be localhost in most cases (if XMPP server and this server run on the same machine). `jid` is the external name.
 
-The UnifiedPush specification defines an endpoint as *the URL of the [...] the Push Server where push messages are sent to for a specific end user Application, from the Push Gateway.*
+`registration.sharedSecret` is used to encrypt tokens in the endpoint URL. A random secret can be generated with `openssl rand -base64 32`.
+
+## Protocol
+
+The [UnifiedPush specification](https://unifiedpush.org/developers/intro/) defines an endpoint as *the URL of the [...] the Push Server where push messages are sent to for a specific end user Application, from the Push Gateway.*
 
 Conversations retrieves the *endpoint* from the Push Provider by sending a registration to it.
 
@@ -57,3 +62,5 @@ If the client has reasonably ensured that the push message has been relayed to t
 ```
 
 If the receiving application has been uninstalled or if the application has unregistered itself from the Push Distributor the client will respond with in IQ-error `item-not-found`. When receiving an `item-not-found` as a response to a push the Push Provider should consider the endpoint as revoked. (Stateless providers might need to add the endpoint to a revocation list until it expires naturally.)
+
+In the unlikely event of a `feature-not-implemented` response the Push Provider SHOULD also consider the endpoint as revoked. All other IQ errors (especially `service-unavailable`) SHOULD be considered temporary.
