@@ -45,9 +45,15 @@ The Push Provider is stateless if the full XMPP address of the user (client that
 When a push occurs, this is when an Application Server (Push Gateway) POSTs a payload to the endpoint, the Push Provider relays the payload by sending push element wrapped by an IQ-set to the client.
 
 ```xml
-<iq type="set" xmlns="jabber:client" id="0279096a-26c5-41e4-b83b-ca47be278184" from="up.conversations.im" to="juliet@example.com/Conversations.r4nD">
+<iq type="set" id="0279096a-26c5-41e4-b83b-ca47be278184" from="up.conversations.im" to="juliet@example.com/Conversations.r4nD">
   <push instance="EtD/1XPLmoIph7W73CZ/uyv6FAnhEAXY1GySHX17vAw=" application="bK3sdmrbtj3bf6XA2S12b8jJUA5TT1dhPEyeoZfVSRM=" xmlns="http://gultsch.de/xmpp/drafts/unified-push">dGl0bGU9VGVzdCZtZXNzYWdlPVdpdGgrVW5pZmllZFB1c2gmcHJpb3JpdHk9NSY=</push>
 </iq>
 ```
-
 The payload is the base64 encoded raw body of the POST.
+
+If the client has reasonably ensured that the push message has been relayed to the application it will respond with an empty `<iq type="result"/>` to the Push Provider.
+```xml
+<iq type="result" id="0279096a-26c5-41e4-b83b-ca47be278184" from="juliet@example.com/Conversations.r4nD" to="up.conversations.im"/>
+```
+
+If the receiving application has been uninstalled or if the application has unregistered itself from the Push Distributor the client will respond with in IQ-error `item-not-found`. When receiving an `item-not-found` as a response to a push the Push Provider should consider the endpoint as revoked. (Stateless providers might need to add the endpoint to a revocation list until it expires naturally.)
