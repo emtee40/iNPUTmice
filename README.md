@@ -34,3 +34,13 @@ The Push Provider responds with the endpoint if the registration was successful.
 
 The endpoint (URL) is only valid until it's expiration. After that the client has to (automatically) renew it’s registration.
 
+
+When a push occurs, this is when an Application Server (Push Gateway) POSTs a payload to the endpoint, the Push Provider relays the payload by sending push element wrapped by an IQ-set to the client.
+
+```xml
+<iq type="set" xmlns="jabber:client" id="0279096a-26c5-41e4-b83b-ca47be278184" from="up.conversations.im" to="juliet@example.com/Conversations.r4nD">
+  <push instance="EtD/1XPLmoIph7W73CZ/uyv6FAnhEAXY1GySHX17vAw=" application="bK3sdmrbtj3bf6XA2S12b8jJUA5TT1dhPEyeoZfVSRM=" xmlns="http://gultsch.de/xmpp/drafts/unified-push">dGl0bGU9VGVzdCZtZXNzYWdlPVdpdGgrVW5pZmllZFB1c2gmcHJpb3JpdHk9NSY=</push>
+</iq>
+```
+
+The payload is the base64 encoded raw body of the POST.
