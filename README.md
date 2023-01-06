@@ -17,8 +17,10 @@ java -jar build/libs/up-0.1-all.jar -c config.json
 
 ## Protocol
 
+The avid reader should familiarize themselves with the [definitions](https://unifiedpush.org/spec/definitions/) and the general architecture of [UnifiedPush](https://unifiedpush.org/) before continue reading here.
+
 ### Registration
-The [UnifiedPush specification](https://unifiedpush.org/developers/intro/) defines an endpoint as *the URL of the [...] the Push Server where push messages are sent to for a specific end user Application, from the Push Gateway.*
+The [UnifiedPush specification](https://unifiedpush.org/developers/intro/) defines an endpoint as *the URL of [...] the Push Server where push messages are sent to for a specific end user Application, from the Push Gateway.*
 
 Conversations retrieves the *endpoint* from the Push Provider by sending a registration to it.
 
