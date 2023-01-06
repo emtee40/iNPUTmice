@@ -75,7 +75,7 @@ The HTTP endpoint is a *push resource* according to [RFC 8030 §5](https://www.r
 
 ### Reliability & Retry Behaviour
 
-The Push Section of the specification defines which error conditions should trigger endpoint revocation but it is deliberately vague about what to do with the push message itself on other error conditions.
+The Push section of the specification defines which error conditions should trigger endpoint revocation but is deliberately vague about what to do with the push message itself on other error conditions.
 
 The push server MAY choose to store the message and attempt to deliver it again when the client comes back online.
 
