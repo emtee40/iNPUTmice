@@ -17,6 +17,7 @@ java -jar build/libs/up-0.1-all.jar -c config.json
 
 ## Protocol
 
+### Registration
 The [UnifiedPush specification](https://unifiedpush.org/developers/intro/) defines an endpoint as *the URL of the [...] the Push Server where push messages are sent to for a specific end user Application, from the Push Gateway.*
 
 Conversations retrieves the *endpoint* from the Push Provider by sending a registration to it.
@@ -47,6 +48,7 @@ The endpoint (URL) is only valid until it's expiration. After that the client ha
 
 The Push Provider is stateless if the full XMPP address of the user (client that registered the endpoint), the application, the instance and the expiration are endcoded in the endpoint URL (via JWT or simliar).
 
+### Push
 When a push occurs, this is when an Application Server (Push Gateway) POSTs a payload to the endpoint, the Push Provider relays the payload by sending push element wrapped by an IQ-set to the client.
 
 ```xml
@@ -64,3 +66,7 @@ If the client has reasonably ensured that the push message has been relayed to t
 If the receiving application has been uninstalled or if the application has unregistered itself from the Push Distributor the client will respond with in IQ-error `item-not-found`. When receiving an `item-not-found` as a response to a push the Push Provider should consider the endpoint as revoked. (Stateless providers might need to add the endpoint to a revocation list until it expires naturally.)
 
 In the unlikely event of a `feature-not-implemented` response the Push Provider SHOULD also consider the endpoint as revoked. All other IQ errors (especially `service-unavailable`) SHOULD be considered temporary.
+
+### HTTP Endpoint
+
+The HTTP endpoint is a *push resource* according to [RFC 8030 §5](https://www.rfc-editor.org/rfc/rfc8030#section-5) with a somewhat reduced feature set.

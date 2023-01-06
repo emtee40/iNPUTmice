@@ -38,5 +38,7 @@ public interface Configuration {
         String getIp();
 
         int getPort();
+
+        String getMessageUri();
     }
 }

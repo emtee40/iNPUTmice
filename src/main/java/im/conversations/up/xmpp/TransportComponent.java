@@ -8,6 +8,7 @@ import im.conversations.up.configuration.Configuration;
 import im.conversations.up.xmpp.extensions.up.Push;
 import im.conversations.up.xmpp.extensions.up.Register;
 import im.conversations.up.xmpp.extensions.up.Registered;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rocks.xmpp.core.XmppException;
@@ -43,6 +44,7 @@ public final class TransportComponent implements AutoCloseable {
                         sessionConfiguration,
                         configuration.getHostname(),
                         configuration.getPort());
+        BabblerFixes.apply(component);
         component.disableFeature(Muc.NAMESPACE);
         return component;
     }
@@ -74,17 +76,19 @@ public final class TransportComponent implements AutoCloseable {
         this.component.addIQHandler(registerHandler);
     }
 
-    public void sendPushMessage(final Target target, final byte[] payload) {
+    public UUID sendPushMessage(final Target target, final byte[] payload) {
         LOGGER.info(
                 "pushing {} bytes to {}/{} of {}",
                 payload.length,
                 target.getApplication(),
                 target.getInstance(),
                 target.getOwner());
+        final UUID uuid = UUID.randomUUID();
         final IQ push =
                 IQ.set(
                         target.getOwner(),
                         new Push(target.getApplication(), target.getInstance(), payload));
+        push.setId(uuid.toString());
         this.component
                 .query(push)
                 .handle(
@@ -94,6 +98,7 @@ public final class TransportComponent implements AutoCloseable {
                             }
                             return null;
                         });
+        return uuid;
     }
 
     private void onPushMessageFailure(final Target target, final Throwable throwable) {
