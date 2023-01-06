@@ -75,10 +75,10 @@ The HTTP endpoint is a *push resource* according to [RFC 8030 §5](https://www.r
 
 ### Reliability & Retry Behaviour
 
-The Push section of the specification defines which error conditions should trigger endpoint revocation but is deliberately vague about what to do with the push message itself on other error conditions.
+The Push section of this specification defines which error conditions should trigger endpoint revocation but is deliberately vague about what to do with the push message itself on other error conditions.
 
 The push server MAY choose to store the message and attempt to deliver it again when the client comes back online.
 
-To let the push server know it came online the client SHOULD send a direct presence on resource bind when it has more then zero endpoints registered with the push server.
+To let the push server know it came online the client SHOULD send a direct presence on resource bind when it has more than zero endpoints registered with the push server.
 
 A push server that implements storage and multiple delivery attempts SHOULD implement the `TTL` and `Topic` headers from RFC 8030. According to RFC 8030 §5.2 *a push service MAY retain a push message for a shorter duration than requested*; since this value can be 0 a push server that does not store messages is still a valid WebPush service. Push servers that do not implement storage MUST include a `TTL: 0` header in the response.
