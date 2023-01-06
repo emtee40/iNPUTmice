@@ -11,12 +11,14 @@ import im.conversations.up.xmpp.extensions.up.Registered;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rocks.xmpp.addr.Jid;
 import rocks.xmpp.core.XmppException;
 import rocks.xmpp.core.session.Extension;
 import rocks.xmpp.core.session.XmppSessionConfiguration;
 import rocks.xmpp.core.stanza.AbstractIQHandler;
 import rocks.xmpp.core.stanza.IQHandler;
 import rocks.xmpp.core.stanza.model.IQ;
+import rocks.xmpp.core.stanza.model.Presence;
 import rocks.xmpp.core.stanza.model.StanzaErrorException;
 import rocks.xmpp.core.stanza.model.errors.Condition;
 import rocks.xmpp.extensions.component.accept.ExternalComponent;
@@ -46,6 +48,14 @@ public final class TransportComponent implements AutoCloseable {
                         configuration.getPort());
         BabblerFixes.apply(component);
         component.disableFeature(Muc.NAMESPACE);
+        component.addInboundPresenceListener(presenceEvent -> {
+            final var presence = presenceEvent.getPresence();
+            final Jid from = presence.getFrom();
+            if (presence.getType() == null) {
+                LOGGER.info("{} appeared online", from);
+                // TODO this is the entry hook for resending messages
+            }
+        });
         return component;
     }
 
@@ -115,7 +125,7 @@ public final class TransportComponent implements AutoCloseable {
     }
 
     public void connectAndRetry() throws InterruptedException {
-        while (true) {
+        while (!Thread.currentThread().isInterrupted()) {
             try {
                 this.component.connect();
                 while (this.component.isConnected()) {
