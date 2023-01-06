@@ -8,6 +8,8 @@ import im.conversations.up.configuration.Configuration;
 import im.conversations.up.xmpp.extensions.up.Push;
 import im.conversations.up.xmpp.extensions.up.Register;
 import im.conversations.up.xmpp.extensions.up.Registered;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +20,6 @@ import rocks.xmpp.core.session.XmppSessionConfiguration;
 import rocks.xmpp.core.stanza.AbstractIQHandler;
 import rocks.xmpp.core.stanza.IQHandler;
 import rocks.xmpp.core.stanza.model.IQ;
-import rocks.xmpp.core.stanza.model.Presence;
 import rocks.xmpp.core.stanza.model.StanzaErrorException;
 import rocks.xmpp.core.stanza.model.errors.Condition;
 import rocks.xmpp.extensions.component.accept.ExternalComponent;
@@ -27,6 +28,9 @@ import rocks.xmpp.extensions.muc.model.Muc;
 public final class TransportComponent implements AutoCloseable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransportComponent.class);
+
+    private static final List<Condition> ENDPOINT_RETRACTION_CONDITIONS =
+            Arrays.asList(Condition.ITEM_NOT_FOUND, Condition.FEATURE_NOT_IMPLEMENTED);
 
     private final ExternalComponent component;
 
@@ -48,14 +52,15 @@ public final class TransportComponent implements AutoCloseable {
                         configuration.getPort());
         BabblerFixes.apply(component);
         component.disableFeature(Muc.NAMESPACE);
-        component.addInboundPresenceListener(presenceEvent -> {
-            final var presence = presenceEvent.getPresence();
-            final Jid from = presence.getFrom();
-            if (presence.getType() == null) {
-                LOGGER.info("{} appeared online", from);
-                // TODO this is the entry hook for resending messages
-            }
-        });
+        component.addInboundPresenceListener(
+                presenceEvent -> {
+                    final var presence = presenceEvent.getPresence();
+                    final Jid from = presence.getFrom();
+                    if (presence.getType() == null) {
+                        LOGGER.info("{} appeared online", from);
+                        // TODO this is the entry hook for resending messages
+                    }
+                });
         return component;
     }
 
@@ -114,7 +119,7 @@ public final class TransportComponent implements AutoCloseable {
     private void onPushMessageFailure(final Target target, final Throwable throwable) {
         if (throwable instanceof StanzaErrorException) {
             final StanzaErrorException stanzaErrorException = (StanzaErrorException) throwable;
-            if (Condition.ITEM_NOT_FOUND.equals(stanzaErrorException.getCondition())) {
+            if (ENDPOINT_RETRACTION_CONDITIONS.contains(stanzaErrorException.getCondition())) {
                 LOGGER.warn("instance {} of {} is gone", target.getInstance(), target.getOwner());
                 // TODO add instance to revocation list until it expires
                 return;
