@@ -29,7 +29,7 @@ public class RegistrationProvider {
         Preconditions.checkArgument(owner != null, "user must be set");
         checkSha256(application, "application");
         checkSha256(instance, "instance");
-        final Instant expiration = Instant.now().plus(Duration.ofDays(1));
+        final Instant expiration = Instant.now().plus(Duration.ofDays(7));
         final String token =
                 Pasetos.V2
                         .LOCAL
