@@ -3,7 +3,9 @@ package im.conversations.up.web;
 import com.damnhandy.uri.template.UriTemplate;
 import dev.paseto.jpaseto.ExpiredPasetoException;
 import dev.paseto.jpaseto.PasetoSecurityException;
+import im.conversations.up.Id;
 import im.conversations.up.RegistrationProvider;
+import im.conversations.up.Services;
 import im.conversations.up.Target;
 import im.conversations.up.configuration.Configuration;
 import java.util.UUID;
@@ -32,7 +34,13 @@ public class WebServer {
                 PayloadTooLargeException.class,
                 ((exception, request, response) -> response.status(413)));
         Spark.post("/push/:token", this::receivePushRequest);
+        Spark.get("/push/:token", this::id);
         this.messageUriTemplate = configuration.getMessageUri();
+    }
+
+    private String id(final Request request, final Response response) {
+        response.header("Content-Type", "application/json");
+        return Services.GSON.toJson(Id.UNIFIED_PUSH_VERSION_1);
     }
 
     private String receivePushRequest(final Request request, final Response response) {
