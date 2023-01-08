@@ -56,7 +56,7 @@ public class WebServer {
         final String location =
                 UriTemplate.fromTemplate(this.messageUriTemplate).set("uuid", uuid).expand();
         response.header("Location", location);
-        response.header("TTL", 0);
+        response.header("TTL", String.valueOf(0));
         return "";
     }
 
