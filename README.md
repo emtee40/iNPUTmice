@@ -2,6 +2,10 @@
 
 This is a [Unified Push](https://unifiedpush.org/) Provider that uses XMPP to talk to a Push Distributor ([Conversations](http://codeberg.org/iNPUTmice/Conversations)).
 
+*up* is hosted on `up.conversations.im`, which acts as the default Push Server for users who want to use Conversations as their Push Distributor. The push server that Conversations uses can be changed to something self hosted in the app settings.
+
+## Self hosting
+
 ### Compile & run
 ```shell
 git clone https://codeberg.org/iNPUTmice/up.git
