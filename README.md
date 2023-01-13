@@ -2,10 +2,12 @@
 
 This is a [Unified Push](https://unifiedpush.org/) Provider that uses XMPP to talk to a Push Distributor ([Conversations](http://codeberg.org/iNPUTmice/Conversations)).
 
-### Disclaimer for end users
+### ⚠️ Disclaimer for End Users
 *up* is hosted on `up.conversations.im`, which acts as the default Push Server for users who want to use Conversations as their Push Distributor. The push server that Conversations uses can be changed to something self hosted in the app settings.
 
-In this setup Conversations facilitates push messages for other apps like Tusky and Fedilab and is not an *End User Application* by UnifiedPush definition.
+In this setup Conversations facilitates push messages for other apps like [Tusky](https://tusky.app/) and [Fedilab](https://fedilab.app/) and is not an *End User Application* by [UnifiedPush definition](https://unifiedpush.org/spec/definitions/).
+
+There is a [Prosody community module](https://modules.prosody.im/mod_unified_push.html) that does the same thing.
 
 ## Self hosting
 
