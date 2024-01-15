@@ -9,7 +9,15 @@ In this setup Conversations facilitates push messages for other apps like [Tusky
 
 There is a [Prosody community module](https://modules.prosody.im/mod_unified_push.html) that does the same thing.
 
+### ℹ️ Information for App developers
+
+If you are an app developer looking to implement UnifiedPush please refer to the [UnifiedPush developer documentation](https://unifiedpush.org/developers/intro/). Choosing what push provider to use and whether to use the default `up.conversations.im` or to spin up their own instance of *up* is something that is left to the End User and not the concern of app developers.
+
 ## Self hosting
+
+### Introduction
+
+*up* is an XMPP component. XMPP components are essentially plug ins that work with most XMPP servers. They connect to the XMPP server via the standardized [XEP-0114: Jabber Component Protocol](https://xmpp.org/extensions/xep-0114.html). You need to run an XMPP server to host *up*. This server can, but does not have to be, the same that hosts your user accounts. Check out the server documentation ([ejabberd](https://docs.ejabberd.im/admin/configuration/listen/#ejabberd-service), [Prosody](https://prosody.im/doc/components), …) to learn how to add external components.
 
 ### Compile & run
 ```shell
