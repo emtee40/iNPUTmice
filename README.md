@@ -5,7 +5,7 @@ This is a [Unified Push](https://unifiedpush.org/) Provider that uses XMPP to ta
 ### ⚠️ Disclaimer for End Users
 *up* is hosted on `up.conversations.im`, which acts as the default Push Server for users who want to use Conversations as their Push Distributor. The push server that Conversations uses can be changed to something self hosted in the app settings.
 
-In this setup Conversations facilitates push messages for other apps like [Tusky](https://tusky.app/) and [Fedilab](https://fedilab.app/) and is not an *End User Application* by [UnifiedPush definition](https://unifiedpush.org/spec/definitions/).
+In this setup Conversations facilitates push messages for other apps like [Tusky](https://tusky.app/) and [Fedilab](https://fedilab.app/) and is not an *End User Application* by [UnifiedPush definition](https://unifiedpush.org/developers/spec/definitions/).
 
 There is a [Prosody community module](https://modules.prosody.im/mod_unified_push.html) that does the same thing.
 
@@ -42,7 +42,7 @@ The client registers with the Push Provider.
 
 *application* and *instance* is terminology borrowed from the UnifiedPush specification. (Application being self explanatory and *instance* (or sometimes *token*) being used because one app might need multiple endpoints for mulitple accounts.)
 
-As far as the Push Provider is concerned both could be opague strings but Conversations uses salted, base64 encoded SHA256 hashes of the application id and the instance (token). It is RECOMMENDED that the Push Provider enforces this convention.
+As far as the Push Provider is concerned both could be opaque strings but Conversations uses salted, base64 encoded SHA256 hashes of the application id and the instance (token). It is RECOMMENDED that the Push Provider enforces this convention.
 
 This will also restrict application and instances to known length.
 
@@ -57,7 +57,7 @@ The Push Provider responds with the endpoint if the registration was successful.
 
 The endpoint (URL) is only valid until it's expiration. After that the client has to (automatically) renew it’s registration.
 
-The Push Provider is stateless if the full XMPP address of the user (client that registered the endpoint), the application, the instance and the expiration are endcoded in the endpoint URL (via JWT or simliar).
+The Push Provider is stateless if the full XMPP address of the user (client that registered the endpoint), the application, the instance and the expiration are encoded in the endpoint URL (via JWT or simliar).
 
 ### Push
 When a push occurs, this is when an Application Server (Push Gateway) POSTs a payload to the endpoint, the Push Provider relays the payload by sending push element wrapped by an IQ-set to the client.
